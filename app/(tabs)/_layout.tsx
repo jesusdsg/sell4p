@@ -7,6 +7,7 @@ import { IconSymbol } from "@/components/ui/IconSymbol";
 import TabBarBackground from "@/components/ui/TabBarBackground";
 import { Colors } from "@/constants/Colors";
 import { useColorScheme } from "@/hooks/useColorScheme";
+import Icon from "react-native-vector-icons/Feather";
 
 export default function TabLayout() {
   const colorScheme = useColorScheme();
@@ -32,7 +33,7 @@ export default function TabLayout() {
         options={{
           title: "Inicio",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={20} name="house.fill" color={color} />
+            <Icon name="home" size={25} color={color} />
           ),
         }}
       />
@@ -41,7 +42,7 @@ export default function TabLayout() {
         options={{
           title: "Compras",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={20} name="paperplane.fill" color={color} />
+            <Icon name="credit-card" size={25} color={color} />
           ),
         }}
       />
@@ -50,7 +51,7 @@ export default function TabLayout() {
         options={{
           title: "Perfil",
           tabBarIcon: ({ color }) => (
-            <IconSymbol size={20} name="house.fill" color={color} />
+            <Icon name="user" size={25} color={color} />
           ),
         }}
       />

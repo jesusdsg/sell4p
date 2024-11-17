@@ -1,21 +1,111 @@
-import { Image, StyleSheet, Platform } from 'react-native';
+import { Image, StyleSheet, Platform, Text, View } from "react-native";
 
-import { HelloWave } from '@/components/HelloWave';
-import ParallaxScrollView from '@/components/ParallaxScrollView';
-import { ThemedText } from '@/components/ThemedText';
-import { ThemedView } from '@/components/ThemedView';
+import { HelloWave } from "@/components/HelloWave";
+import ParallaxScrollView from "@/components/ParallaxScrollView";
+import { ThemedText } from "@/components/ThemedText";
+import { ThemedView } from "@/components/ThemedView";
+import Tabs from "@/components/ui/Tabs";
+import { ITab } from "@/types/Tabs";
+import { useEffect, useState } from "react";
+import Card from "@/components/ui/Card";
+
+const tabs: ITab[] = [
+  { id: 1, title: "Tecnología" },
+  { id: 2, title: "Hogar" },
+];
+
+const mockContent = [
+  {
+    id: 1,
+    content: "Celulares",
+    categoryId: 1,
+    image:
+      "https://imagedelivery.net/4fYuQyy-r8_rpBpcY7lH_A/falabellaCO/129558635_01/w=800,h=800,fit=pad",
+  },
+  {
+    id: 2,
+    content: "Lavadoras",
+    categoryId: 1,
+    image:
+      "https://www.lg.com/content/dam/channel/wcms/co/images/lavadoras-y-secadoras/wd16eg2s6_aesecol_escb_co_c/gallery/Medium_01.jpg",
+  },
+  {
+    id: 3,
+    content: "Gadgets",
+    categoryId: 1,
+    image:
+      "https://celltophone.com/wp-content/uploads/2024/03/Top-10-Latest-Electronic-Gadgets-One-Can-Buy-in-2024-1200x900.jpg",
+  },
+  {
+    id: 4,
+    content: "Consolas",
+    categoryId: 1,
+    image:
+      "https://http2.mlstatic.com/D_NQ_NP_736574-MLU72670829971_112023-O.webp",
+  },
+  {
+    id: 5,
+    content: "Alfombras",
+    categoryId: 2,
+    image:
+      "https://http2.mlstatic.com/D_Q_NP_630788-MLU74424017271_022024-O.webp",
+  },
+  {
+    id: 6,
+    content: "Neveras",
+    categoryId: 1,
+    image:
+      "https://img.global.news.samsung.com/co/wp-content/uploads/2018/11/FH.jpg",
+  },
+];
 
 export default function HomeScreen() {
+  const [activeTab, setActiveTab] = useState(1);
+  const [filteredContent, setFilteredContent] = useState<any[]>();
+
+  useEffect(() => {
+    filterContent();
+  }, [activeTab]);
+
+  const filterContent = () => {
+    const activeCategory = activeTab;
+    const filtered = mockContent.filter(
+      (content) => content.categoryId == activeCategory
+    );
+    setFilteredContent(filtered);
+  };
+
   return (
     <ParallaxScrollView
-      headerBackgroundColor={{ light: '#A1CEDC', dark: '#1D3D47' }}
+      headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
       headerImage={
         <Image
-          source={require('@/assets/images/partial-react-logo.png')}
+          source={require("@/assets/images/partial-react-logo.png")}
           style={styles.reactLogo}
         />
-      }>
-      <ThemedView style={styles.titleContainer}>
+      }
+    >
+      <ThemedView>
+        <Tabs tabs={tabs} activeTab={activeTab} setActiveTab={setActiveTab} />
+      </ThemedView>
+      <ThemedView style={styles.categoryContainer}>
+        {filteredContent?.map((content) => (
+          <Card key={content.id}>
+            <View style={styles.imageContainer}>
+              <Image
+                source={{ uri: content.image }}
+                resizeMode="cover"
+                style={{ height: "100%", borderRadius: 10 }}
+              />
+            </View>
+            <Text style={{ color: "#fff", marginVertical: 2 }}>
+              {content.content}
+            </Text>
+          </Card>
+        ))}
+      </ThemedView>
+
+      {/* <ThemedView style={styles.titleContainer}>
         <ThemedText type="title">Welcome!</ThemedText>
         <HelloWave />
       </ThemedView>
@@ -49,16 +139,21 @@ export default function HomeScreen() {
           <ThemedText type="defaultSemiBold">app</ThemedText> to{' '}
           <ThemedText type="defaultSemiBold">app-example</ThemedText>.
         </ThemedText>
-      </ThemedView>
+      </ThemedView> */}
     </ParallaxScrollView>
   );
 }
 
 const styles = StyleSheet.create({
   titleContainer: {
-    flexDirection: 'row',
-    alignItems: 'center',
+    flexDirection: "row",
+    alignItems: "center",
     gap: 8,
+  },
+  imageContainer: {
+    height: 100,
+    width: "100%",
+    borderRadius: 10,
   },
   stepContainer: {
     gap: 8,
@@ -69,6 +164,11 @@ const styles = StyleSheet.create({
     width: 290,
     bottom: 0,
     left: 0,
-    position: 'absolute',
+    position: "absolute",
+  },
+  categoryContainer: {
+    flexDirection: "row",
+    gap: 10,
+    flexWrap: "wrap",
   },
 });
