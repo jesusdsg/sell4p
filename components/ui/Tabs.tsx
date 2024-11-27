@@ -37,6 +37,7 @@ const styles = StyleSheet.create({
     gap: 10,
     margin: "auto",
     alignSelf: "center",
+    flexWrap: "wrap",
   },
   tab: {
     backgroundColor: Colors.dark.backgroundLight,

@@ -36,6 +36,10 @@
     ],
     "experiments": {
       "typedRoutes": true
+    },
+    "extra": {
+      "API_URL": "https://miapi.limonadafrappe.com/ecommerce/home-app",
+      "APP_ENV": "production"
     }
   }
 }

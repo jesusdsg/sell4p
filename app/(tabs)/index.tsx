@@ -1,4 +1,11 @@
-import { Image, StyleSheet, Platform, Text, View } from "react-native";
+import {
+  Image,
+  StyleSheet,
+  Platform,
+  Text,
+  View,
+  FlatList,
+} from "react-native";
 
 import { HelloWave } from "@/components/HelloWave";
 import ParallaxScrollView from "@/components/ParallaxScrollView";
@@ -8,11 +15,18 @@ import Tabs from "@/components/ui/Tabs";
 import { ITab } from "@/types/Tabs";
 import { useEffect, useState } from "react";
 import Card from "@/components/ui/Card";
+import axiosClient from "../api/axiosClient";
 
-const tabs: ITab[] = [
+/* const tabs: ITab[] = [
   { id: 1, title: "Tecnología" },
   { id: 2, title: "Hogar" },
-];
+]; */
+
+interface ICategory {
+  id: number;
+  name: string;
+  image: string;
+}
 
 const mockContent = [
   {
@@ -62,9 +76,39 @@ const mockContent = [
 export default function HomeScreen() {
   const [activeTab, setActiveTab] = useState(1);
   const [filteredContent, setFilteredContent] = useState<any[]>();
+  const [sliderData, setSliderData] = useState<any>([]);
+  const [categoryData, setCategoryData] = useState<ICategory[]>([]);
+  const [tabs, setTabs] = useState<ITab[]>([]);
+
+  const formatCategories = () => {
+    const newCategories = categoryData.map((category) => {
+      return {
+        id: category.id,
+        title: category.name,
+      };
+    });
+    setTabs(newCategories);
+  };
+
+  const getData = async () => {
+    try {
+      const response = await axiosClient.get("");
+      //console.log("response is category ==>  ", response.data.category);
+      //console.log("response is slider ===> ", response.data.slider);
+      const { category, slider } = response.data;
+      console.log("Category", slider);
+      if (category) setCategoryData(category);
+      if (slider) setSliderData(slider);
+      formatCategories();
+    } catch (error) {
+      console.log("Error ", error);
+    }
+  };
 
   useEffect(() => {
     filterContent();
+    getData();
+    console.log("Slider ", sliderData);
   }, [activeTab]);
 
   const filterContent = () => {
@@ -75,13 +119,35 @@ export default function HomeScreen() {
     setFilteredContent(filtered);
   };
 
+  const images = [
+    {
+      id: "1",
+      source:
+        "https://img.freepik.com/photos-gratuite/couleurs-neons-brillantes-brillent-cameleon-sauvage_23-2151682804.jpg",
+    },
+    /* { id: "2", source: require("@/assets/images/another-image.png") },
+    { id: "3", source: require("@/assets/images/yet-another-image.png") }, */
+    // Agrega más imágenes si lo deseas
+  ];
+
   return (
     <ParallaxScrollView
       headerBackgroundColor={{ light: "#A1CEDC", dark: "#1D3D47" }}
       headerImage={
-        <Image
-          source={require("@/assets/images/partial-react-logo.png")}
-          style={styles.reactLogo}
+        <FlatList
+          data={sliderData}
+          horizontal
+          pagingEnabled
+          showsHorizontalScrollIndicator={false}
+          keyExtractor={(item) => item.id}
+          renderItem={({ item }) => (
+            <View style={{ width: 600, backgroundColor: "red", height: 600 }}>
+              <Image
+                source={{ uri: item.img }}
+                style={{ width: "100%", height: 200, resizeMode: "cover" }}
+              />
+            </View>
+          )}
         />
       }
     >
@@ -170,5 +236,15 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     gap: 10,
     flexWrap: "wrap",
+  },
+  image: {
+    width: "100%",
+    height: 300, // Ajusta el tamaño según sea necesario
+    resizeMode: "cover",
+  },
+  sliderContainer: {
+    width: "100%",
+    justifyContent: "center",
+    alignItems: "center",
   },
 });
